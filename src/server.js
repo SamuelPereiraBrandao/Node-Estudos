@@ -1,5 +1,41 @@
 // const http = require('http');
 import http from 'node:http';
+import { json } from './middlewares/json.js';
+
+
+const users = [];
+
+const server = http.createServer(async (req, res) => {
+    const { method, url } = req;
+
+    await json(req, res);
+    
+    if (method == 'GET' && url === '/users') {
+        return res.end(JSON.stringify(users));
+    }
+
+
+
+    if (method == 'POST' && url === '/users') {
+        const { name, email } = req.body;
+        users.push({
+            id: users.length + 1,
+            name: name,
+            email: email,
+        })
+        return res.writeHead(201).end();
+    }
+
+    return res.writeHead(404).end('Rota não encontrada');
+
+});
+
+server.listen(3333);
+// import fastify from 'fastify';
+//CommonJS = require
+//Aplicações HTTP => APIs
+
+// ESModules => import/export
 
 // criar um usuário (nome, email, senha)
 
@@ -15,24 +51,9 @@ import http from 'node:http';
 // PUT/users/123 => Atualizando o usuário de ID 123 no back-end
 // DELETE/users/123 => Removendo o usuário de ID 123 no back-end
 
-const server = http.createServer((req, res) => {
-    const { method, url } = req;
-    console.log(method, url);
-    
-    if (method == 'GET' && url === '/users') {
-        return res.end('Listagem de usuários');
-    }
 
-    if (method == 'POST' && url === '/users') {
-        return res.end('Criação de um usuário');
-    }
+//stateful - Stateless
+// Stateful => O servidor mantém o estado da aplicação, ou seja, ele lembra das informações do usuário durante a navegação. Ex: Sessões, cookies.
+// Stateless => O servidor não mantém o estado da aplicação, ou seja, ele não lembra das informações do usuário durante a navegação. Ex: APIs RESTful.
 
-});
-
-server.listen(3333);
-// import fastify from 'fastify';
-//CommonJS = require
-//Aplicações HTTP => APIs
-
-// ESModules => import/export
-
+//Json => JavaScript Object Notation => Formato de dados leve e fácil de ler e escrever. Utilizado para troca de dados entre cliente e servidor.
