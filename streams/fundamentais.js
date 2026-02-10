@@ -2,10 +2,10 @@
 // Importação de clientes via CSV (Excel)
 // 1GB - 1.000.000 de linhas
 // POST /upload import.csv
-//10MB/S  - 100s
-//100s => Inseções no banco de dados (Demorado)
+// 10MB/S  - 100s
+// 100s => Inseções no banco de dados (Demorado)
 // Solução: Processar o arquivo em pedaços (streams)
-//Readble Streams / writable Streams
+// Readble Streams / writable Streams
 
 
 // process.stdin.pipe(process.stdout);

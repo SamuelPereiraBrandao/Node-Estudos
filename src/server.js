@@ -1,29 +1,27 @@
 // const http = require('http');
 import http from 'node:http';
 import { json } from './middlewares/json.js';
+import { routes } from './routes.js';
 
 
-const users = [];
+//Query parameters(URL stateful => filtros, paginação, não-obrigatórios): http://localhost:3333/users?name=Samuel&age=30
+// route parameters(Identificação de recursos): http://localhost:3333/users/123
+// Request body(envio de informações, formulários,HTTPs ): http://localhost:3333/users => { "name": "Samuel", "email": " "}
+
+
+
 
 const server = http.createServer(async (req, res) => {
     const { method, url } = req;
 
     await json(req, res);
     
-    if (method == 'GET' && url === '/users') {
-        return res.end(JSON.stringify(users));
-    }
+    const route = routes.find(route => {
+        return route.method === method && route.path === url;
+    })
 
-
-
-    if (method == 'POST' && url === '/users') {
-        const { name, email } = req.body;
-        users.push({
-            id: users.length + 1,
-            name: name,
-            email: email,
-        })
-        return res.writeHead(201).end();
+    if (route) {
+        return route.handler(req, res);
     }
 
     return res.writeHead(404).end('Rota não encontrada');
