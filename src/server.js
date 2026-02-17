@@ -2,6 +2,7 @@
 import http from 'node:http';
 import { json } from './middlewares/json.js';
 import { routes } from './routes.js';
+import { extractQueryParams } from './utils/extract-query-params.js';
 
 
 //Query parameters(URL stateful => filtros, paginação, não-obrigatórios): http://localhost:3333/users?name=Samuel&age=30
@@ -22,9 +23,12 @@ const server = http.createServer(async (req, res) => {
 
     if (route) {
         const routeParms = req.url.match(route.path);
+        // console.log(routeParms.groups)
+        // console.log(extractQueryParams(routeParms.groups.query))
 
-        req.params = { ...routeParms.groups }
-
+        const { query, ...params } = routeParms.groups;
+        req.params = params
+        req.query = query ? extractQueryParams(query) : {};
        
         return route.handler(req, res);
     }
